@@ -25,11 +25,12 @@ public class ProductRepository {
 		return 1;
 	}
 
-	public Product findProductByProductname(String productname) {
+	public Product findProductByProductName(String productName) {
 		Product findProduct = null;
 		
 		for(Product product: productList) {
-			if(product.getProductName().equals(productname)) {
+			if(product.getProductName().equals(productName)) {
+				findProduct = product;
 				break;
 			}
 			

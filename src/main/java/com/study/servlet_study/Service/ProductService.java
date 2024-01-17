@@ -24,8 +24,18 @@ public class ProductService {
 		return productRepository.saveProduct(product);
 	}
 	
-	public Product getProduct(String productname) {
-		return productRepository.findProductByProductname(productname);
+	public Product getProduct(String productName) {
+		return productRepository.findProductByProductName(productName);
+		
 	}
+	
+//	public boolean getDuplication(Product product) {
+//		if(productRepository.findProductByProductName(product.getColor()) == null) {
+//			return false;
+//		} else {
+//			return true;
+//		}		
+//	}
+	
 
 }

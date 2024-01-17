@@ -16,44 +16,72 @@ import lombok.Builder;
 
 @WebServlet("/product")
 public class ProductServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 	
+	private static final long serialVersionUID = 1L;
 	private ProductService productService;
        
-
     public ProductServlet() {
         super();
-        productService = productService.getInstance();
+        productService = ProductService.getInstance();
     }
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String productname = request.getParameter("productname");
+		String productName = request.getParameter("productName");
 		
-		Product product = productService.getProduct(productname);
+		Product product = productService.getProduct(productName);
 		response.setStatus(200);
-		response.getWriter().println(product);		
+		response.getWriter().println(product);
 		
 	}
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String productname = request.getParameter("productname");
-		int price = Integer.parseInt(request.getParameter("price"));
-		String size = request.getParameter("size");
-		String color = request.getParameter("color");
+		
+		int price = 0;
+		
+		try {
+			price = Integer.parseInt(request.getParameter("price"));
+		}catch (NumberFormatException e) {
+			response.setStatus(400);
+			response.getWriter().println("숫자만 입력해야 합니다");
+			return;
+		}
+		
+//		String productName = request.getParameter("productName");
+//		int price = Integer.parseInt(request.getParameter("price"));
+//		String size = request.getParameter("size");
+//		String color = request.getParameter("color");
 		
 		Product product = Product.builder()
-				.productName(productname)
+				.productName(request.getParameter("productName"))
 				.price(price)
-				.size(size)
-				.color(color)
-				.build();		
+				.size(request.getParameter("size"))
+				.color(request.getParameter("color"))
+				.build();
 		
-		int body = productService.addProduct(product);
+		// 중복확인 후 중복이라면 코드400 오류 뜨고 getWriter 응답
+		if(productService.getProduct(product.getProductName()) != null) {
+			response.setStatus(400);
+			response.getWriter().println("이미 등록된 상품명입니다");
+			return;
+		}
+		
+		productService.addProduct(product);
 		response.setStatus(201);
-		response.getWriter().println(body);
+		response.getWriter().println("상품 등록이 완료되었습니다");
+	
+		
+		
+//		if(productService.getDuplication(product) == true) {
+//			response.setStatus(400);
+//			response.getWriter().println(0);
+//		}else {
+//			response.setStatus(201);
+//			response.getWriter().println(1);
+//		}
+		
 	}
 
 }
