@@ -83,5 +83,4 @@ public class ProductServlet extends HttpServlet {
 //		}
 		
 	}
-
 }
